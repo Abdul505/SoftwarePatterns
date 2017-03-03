@@ -14,6 +14,20 @@ import javax.swing.JOptionPane;
 public class RandomFile implements IRandomFile {
 	private RandomAccessFile output;
 	private RandomAccessFile input;
+	
+	private RandomAccessFile file = null;
+	//file not null
+	private void fileNotNull(){
+		try {
+			
+			if (file != null)
+				file.close();
+		}
+		catch (IOException ioException) {
+			JOptionPane.showMessageDialog(null, "Error closing file!");
+			System.exit(1);
+		}
+	}
 
 	// Create new file
 	/* (non-Javadoc)
@@ -21,7 +35,7 @@ public class RandomFile implements IRandomFile {
 	 */
 	@Override
 	public void createFile(String fileName) {
-		RandomAccessFile file = null;
+		
 
 		try // open file for reading and writing
 		{
@@ -34,14 +48,8 @@ public class RandomFile implements IRandomFile {
 		} // end catch
 
 		finally {
-			try {
-				if (file != null)
-					file.close(); // close file
-			} // end try
-			catch (IOException ioException) {
-				JOptionPane.showMessageDialog(null, "Error closing file!");
-				System.exit(1);
-			} // end catch
+			
+			fileNotNull();
 		} // end finally
 	} // end createFile
 
@@ -66,15 +74,7 @@ public class RandomFile implements IRandomFile {
 	 */
 	@Override
 	public void closeWriteFile() {
-		try // close file and exit
-		{
-			if (output != null)
-				output.close();
-		} // end try
-		catch (IOException ioException) {
-			JOptionPane.showMessageDialog(null, "Error closing file!");
-			System.exit(1);
-		} // end catch
+		fileNotNull();
 	} // end closeFile
 
 	// Add records to file
@@ -103,12 +103,8 @@ public class RandomFile implements IRandomFile {
 			JOptionPane.showMessageDialog(null, "Error writing to file!");
 		} // end catch
 
-		return currentRecordStart - IRandomAccessEmployeeRecord.SIZE;// Return
-																	// position
-																	// where
-																	// object
-																	// starts in
-																	// the file
+		// Return position where object starts in the file
+		return currentRecordStart - IRandomAccessEmployeeRecord.SIZE;
 	}// end addRecords
 
 	// Change details for existing object
@@ -142,10 +138,8 @@ public class RandomFile implements IRandomFile {
 	@Override
 	public void deleteRecords(long byteToStart) {
 		long currentRecordStart = byteToStart;
-
 		// object to be written to file
 		IRandomAccessEmployeeRecord record;
-		;
 
 		try // output values to file
 		{
@@ -179,15 +173,7 @@ public class RandomFile implements IRandomFile {
 	 */
 	@Override
 	public void closeReadFile() {
-		try // close file and exit
-		{
-			if (input != null)
-				input.close();
-		} // end try
-		catch (IOException ioException) {
-			JOptionPane.showMessageDialog(null, "Error closing file!");
-			System.exit(1);
-		} // end catch
+		fileNotNull();
 	} // end method closeFile
 
 	// Get position of first record in file

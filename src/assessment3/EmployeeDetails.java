@@ -51,9 +51,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import net.miginfocom.swing.MigLayout;
 
 public class EmployeeDetails extends JFrame implements IEmployeeDetails, ActionListener, ItemListener, DocumentListener, WindowListener {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	// decimal format for inactive currency text field
 	private static final DecimalFormat format = new DecimalFormat("\u20ac ###,###,##0.00");
@@ -76,10 +74,9 @@ public class EmployeeDetails extends JFrame implements IEmployeeDetails, ActionL
 			saveChange, cancelChange;
 	private JComboBox<String> genderCombo, departmentCombo, fullTimeCombo;
 	private JTextField idField, ppsField, surnameField, firstNameField, salaryField;
-	//Abdul
-	//Removed the below code
-	//private static EmployeeDetails frame = new EmployeeDetails();
+	
 	// font for labels, text fields and combo boxes
+	
 	Font font1 = new Font("SansSerif", Font.BOLD, 16);
 	// holds automatically generated file name
 	String generatedFileName;
@@ -146,7 +143,7 @@ public class EmployeeDetails extends JFrame implements IEmployeeDetails, ActionL
 		closeMenu.add(closeApp = new JMenuItem("Close")).addActionListener(this);
 		closeApp.setMnemonic(KeyEvent.VK_F4);
 		closeApp.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.CTRL_MASK));
-
+		
 		return menuBar;
 	}// end menuBar
 
@@ -995,83 +992,229 @@ public class EmployeeDetails extends JFrame implements IEmployeeDetails, ActionL
 	}// end createRandomFile
 
 	// action listener for buttons, text field and menu items
-	public void actionPerformed(ActionEvent e) {
-
+	//A function for holding the action listeners for each button
+			public void buttonActions(){
+			//creating action listener for each button
+				closeApp.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e){
+							if (checkInput() && !checkForChanges())
+								exitApp();
+						}
+					});
+					
+					open.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e){
+							if (checkInput() && !checkForChanges())
+								openFile();
+						}
+					});
+					
+					save.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e){
+							if (checkInput() && !checkForChanges())
+								saveFile();
+								change = false;
+						}
+					});
+					
+					saveAs.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e){
+							if (checkInput() && !checkForChanges())
+								saveFileAs();
+								change = false;
+						}
+					});
+					
+					searchById.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e){
+							if (checkInput() && !checkForChanges())
+								displaySearchByIdDialog();
+						}
+					});
+					
+					searchBySurname.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e){
+							if (checkInput() && !checkForChanges())
+								displaySearchBySurnameDialog();
+						}
+					});
+					
+					
+					ActionListener searchIdListener = new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							searchEmployeeById();
+						}
+					};
+					
+					searchId.addActionListener(searchIdListener);
+					searchByIdField.addActionListener(searchIdListener);
+					
+					//search surname
+					ActionListener searchSurnameListener = new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							searchEmployeeBySurname();
+						}
+					};
+					
+					searchSurname.addActionListener(searchSurnameListener);
+					searchBySurnameField.addActionListener(searchSurnameListener);
+					
+					saveChange.addActionListener(new ActionListener(){
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							if (checkInput() && !checkForChanges());	
+						}
+					});
+					
+				cancelChange.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						cancelChange();
+					}
+				});
+				
+				//first || firstItem
+				ActionListener firstListener = new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (checkInput() && !checkForChanges()) 
+						{
+							firstRecord();
+							displayRecords(currentEmployee);
+						}
+					}
+				};
+				
+				firstItem.addActionListener(firstListener);
+				first.addActionListener(firstListener);
+				//prevItem || previous
+				ActionListener previousListener = new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (checkInput() && !checkForChanges()) {
+							previousRecord();
+							displayRecords(currentEmployee);
+						}
+					}
+				};
+				
+				prevItem.addActionListener(previousListener);
+				previous.addActionListener(previousListener);
+				
+				//nextItem ||next
+				ActionListener nextListener = new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (checkInput() && !checkForChanges()) {
+							nextRecord();
+							displayRecords(currentEmployee);
+						}
+					}
+				};
+				
+				nextItem.addActionListener(nextListener);
+				next.addActionListener(nextListener);
+				
+				//lastItem || last
+				ActionListener lastListener = new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						if (checkInput() && !checkForChanges()) {
+							lastRecord();
+							displayRecords(currentEmployee);
+						}//end if
+					}
+				};
+				
+				lastItem.addActionListener(lastListener);
+				last.addActionListener(lastListener);
+				
+				//listAll || displayAll
+				ActionListener ListandDisplayListener = new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						if (checkInput() && !checkForChanges()){
+							if (isSomeoneToDisplay())
+							{
+								displayEmployeeSummaryDialog();
+							}
+						}
+					}
+				};
+				listAll.addActionListener(ListandDisplayListener);
+				displayAll.addActionListener(ListandDisplayListener);
+				
+				//create|| add
+				ActionListener addListener = new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (checkInput() && !checkForChanges())
+						{
+							new AddRecordDialog(EmployeeDetails.this);
+						}
+					}
+				};
+				create.addActionListener(addListener);
+				add.addActionListener(addListener);
+				
+				//edit
+				ActionListener editListener = new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (checkInput() && !checkForChanges())
+							editDetails();
+					}
+				};
+				modify.addActionListener(editListener);
+				edit.addActionListener(editListener);
+				
+				//delete
+				ActionListener deleteListener = new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (checkInput() && !checkForChanges())
+							deleteRecord();
+					}
+				};
+				delete.addActionListener(deleteListener);
+				deleteButton.addActionListener(deleteListener);
+				
+				//searchBySurname
+				searchBySurname.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						if (checkInput() && !checkForChanges())
+							new SearchBySurnameDialog(EmployeeDetails.this);
+					}
+				});
+				
+		};// end buttonActions
 		
-		if (e.getSource() == closeApp) {
-			if (checkInput() && !checkForChanges())
-				exitApp();
-		} else if (e.getSource() == open) {
-			if (checkInput() && !checkForChanges())
-				openFile();
-		} else if (e.getSource() == save) {
-			if (checkInput() && !checkForChanges())
-				saveFile();
-			change = false;
-		} else if (e.getSource() == saveAs) {
-			if (checkInput() && !checkForChanges())
-				saveFileAs();
-			change = false;
-		} else if (e.getSource() == searchById) {
-			if (checkInput() && !checkForChanges())
-				displaySearchByIdDialog();
-		} else if (e.getSource() == searchBySurname) {
-			if (checkInput() && !checkForChanges())
-				displaySearchBySurnameDialog();
-		} else if (e.getSource() == searchId || e.getSource() == searchByIdField)
-			searchEmployeeById();
-		else if (e.getSource() == searchSurname || e.getSource() == searchBySurnameField)
-			searchEmployeeBySurname();
-		else if (e.getSource() == saveChange) {
-			if (checkInput() && !checkForChanges())
-				;
-		} else if (e.getSource() == cancelChange)
-			cancelChange();
-		else if (e.getSource() == firstItem || e.getSource() == first) {
-			if (checkInput() && !checkForChanges()) {
-				firstRecord();
-				displayRecords(currentEmployee);
-			}
-		} else if (e.getSource() == prevItem || e.getSource() == previous) {
-			if (checkInput() && !checkForChanges()) {
-				previousRecord();
-				displayRecords(currentEmployee);
-			}
-		} else if (e.getSource() == nextItem || e.getSource() == next) {
-			if (checkInput() && !checkForChanges()) {
-				nextRecord();
-				displayRecords(currentEmployee);
-			}
-		} else if (e.getSource() == lastItem || e.getSource() == last) {
-			if (checkInput() && !checkForChanges()) {
-				lastRecord();
-				displayRecords(currentEmployee);
-			}
-		} else if (e.getSource() == listAll || e.getSource() == displayAll) {
-			if (checkInput() && !checkForChanges())
-				if (isSomeoneToDisplay())
-					displayEmployeeSummaryDialog();
-		} else if (e.getSource() == create || e.getSource() == add) {
-			if (checkInput() && !checkForChanges())
-				new AddRecordDialog(EmployeeDetails.this);
-		} else if (e.getSource() == modify || e.getSource() == edit) {
-			if (checkInput() && !checkForChanges())
-				editDetails();
-		} else if (e.getSource() == delete || e.getSource() == deleteButton) {
-			if (checkInput() && !checkForChanges())
-				deleteRecord();
-		} else if (e.getSource() == searchBySurname) {
-			if (checkInput() && !checkForChanges())
-				new SearchBySurnameDialog(EmployeeDetails.this);
-		}
-	}// end actionPerformed
+		public void actionPerformed(ActionEvent e) {
+			
+		}// end action performed
+
 
 	// content pane for main dialog
 	public void createContentPane() {
 		setTitle("Employee Details");
 		createRandomFile();// create random file name
 		JPanel dialog = new JPanel(new MigLayout());
-
 		setJMenuBar(menuBar());// add menu bar to frame
 		// add search panel to frame
 		dialog.add(searchPanel(), "width 400:400:400, growx, pushx");
@@ -1086,27 +1229,6 @@ public class EmployeeDetails extends JFrame implements IEmployeeDetails, ActionL
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		addWindowListener(this);
 	}// end createContentPane
-
-	//Abdul
-	//Removed the below code
-//	// create and show main dialog
-//	private static void createAndShowGUI() {
-//
-//		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-//		frame.createContentPane();// add content pane to frame
-//		frame.setSize(760, 600);
-//		frame.setLocation(250, 200);
-//		frame.setVisible(true);
-//	}// end createAndShowGUI
-//
-//	// main method
-//	public static void main(String args[]) {
-//		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-//			public void run() {
-//				createAndShowGUI();
-//			}
-//		});
-//	}// end main
 
 	// DocumentListener methods
 	public void changedUpdate(DocumentEvent d) {
@@ -1152,4 +1274,5 @@ public class EmployeeDetails extends JFrame implements IEmployeeDetails, ActionL
 
 	public void windowOpened(WindowEvent e) {
 	}
+
 }// end class EmployeeDetails

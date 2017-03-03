@@ -20,5 +20,6 @@ public interface IEmployeeDetails {
 	// search Employee by surname
 	public void searchEmployeeBySurname();
 	
+	public void buttonActions();
 
 }

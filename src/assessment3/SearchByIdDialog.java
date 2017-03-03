@@ -24,6 +24,10 @@ import javax.swing.JTextField;
 import javax.swing.border.EtchedBorder;
 
 public class SearchByIdDialog extends JDialog implements ActionListener, ISearchByIdDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	EmployeeDetails parent;
 	JButton search, cancel;
 	JTextField searchField;
